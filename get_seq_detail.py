@@ -21,25 +21,19 @@ if not os.path.exists(result_dir):
 
 
 def get_seq_details(file):
-    details = {}
+    result = {}
     with open(file, 'r') as fl:
-        temp_code = ''
-        temp_detail = ''
-        last_code = ''
-        last_detail = ''
-        for line in fl:
-            if line.find('>') == 0:
-                if temp_code and temp_detail:
-                    details[temp_code] = temp_detail
-                temp_code = line.replace('>', '').rstrip('\t\n\r')
-                last_code = temp_code
-                temp_detail = ''
-            else:
-                temp_detail += line.rstrip('\t\n\r')
-                last_detail = temp_detail
-        if last_code and last_detail:
-            details[last_code] = last_detail
-    return details
+        contents = fl.readlines()
+    seq_key = ''
+    for line in contents:
+        content = line.strip()
+        if content.find('>') == 0:
+            seq_key = content.replace('>', '').strip()
+            result[seq_key] = ''
+        else:
+            if seq_key:
+                result[seq_key] += content
+    return result
 
 
 def write_result(name, code, detail):
@@ -53,8 +47,6 @@ print('开始处理..............')
 start_time = time.time()
 
 seq_details = get_seq_details(detail_file)
-print(seq_details)
-exit
 
 with open(seq_file) as f:
     for seq_line in f:
