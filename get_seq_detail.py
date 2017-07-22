@@ -27,8 +27,8 @@ def get_seq_details(file):
     seq_key = ''
     for line in contents:
         content = line.strip()
-        if content.find('>') == 0:
-            seq_key = content.replace('>', '').strip()
+        if '>' in content:
+            seq_key = content[1:]
             result[seq_key] = ''
         else:
             if seq_key:
